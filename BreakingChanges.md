@@ -5,8 +5,8 @@
 * Obsolete api is removed
 * CompatArg is marked as obsolete
 * Nullability is enabled for public api for .NET 8+. Workaround: you can disable nullability `<Nullable>disable</Nullable>` on project if you don't want to use it. more info https://learn.microsoft.com/en-us/dotnet/csharp/nullable-references
-* Make internal all classes that could be internal
-* Make internal all classes that could be internal
+* Make sealed all classes that could be sealed
+* Make internal all classes that could be internal (if you get stuck with this change, please raise the issue with your case to restore visibility)
 
 5.0.0 Release
 ================

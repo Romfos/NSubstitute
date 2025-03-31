@@ -1,8 +1,8 @@
 ﻿namespace NSubstitute.Core.Arguments;
 
-internal sealed class ArgumentFormatter : IArgumentFormatter
+public sealed class ArgumentFormatter : IArgumentFormatter
 {
-    internal static IArgumentFormatter Default { get; } = new ArgumentFormatter();
+    public static IArgumentFormatter Default { get; } = new ArgumentFormatter();
 
     public string Format(object? argument, bool highlight)
     {
