@@ -5,7 +5,8 @@ internal sealed class CallInfoFactory : ICallInfoFactory
     public CallInfo Create(ICall call)
     {
         var arguments = GetArgumentsFromCall(call);
-        return new CallInfo(arguments);
+        var genericArguments = call.GetMethodInfo().GetGenericArguments();
+        return new CallInfo(arguments, genericArguments);
     }
 
     private static Argument[] GetArgumentsFromCall(ICall call)

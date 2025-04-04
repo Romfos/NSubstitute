@@ -1,5 +1,6 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Globalization;
+using System.Reflection;
 using NUnit.Framework;
 
 namespace NSubstitute.Acceptance.Specs;
@@ -11,6 +12,10 @@ public class GenericArguments
     {
         void SomeAction<TState>(int level, TState state);
         string SomeFunction<TState>(int level, TState state);
+        ICollection<TState> SomeFunction<TState>(TState state);
+        ICollection<TState> SomeFunctionWithoutGenericMethodParameter<TState>(int level);
+        bool SomeFunctionWithOut<TState>(out IEnumerable<TState> state);
+        bool SomeFunctionWithRef<TState>(ref IEnumerable<TState> state);
         void SomeActionWithGenericConstraints<TState>(int level, TState state) where TState : IEnumerable<int>;
         string SomeFunctionWithGenericConstraints<TState>(int level, TState state) where TState : IEnumerable<int>;
     }
@@ -130,5 +135,79 @@ public class GenericArguments
         var result = something.SomeFunctionWithGenericConstraints(7, new[] { 3409 });
 
         Assert.That(result, Is.EqualTo("matched"));
+    }
+
+    [Test]
+    public void Returns_works_with_AnyType_for_result_with_AnyType_generic_argument()
+    {
+        ISomethingWithGenerics something = Substitute.For<ISomethingWithGenerics>();
+        something
+            .SomeFunction(Arg.Any<Arg.AnyType>())
+            .Returns(x =>
+            {
+                return default!;
+            });
+
+        ICollection<int> result = something.SomeFunction(7);
+
+        Assert.That(result, Is.Null);
+    }
+
+    [Test]
+    public void Returns_works_with_AnyType_for_out_parameter_with_AnyType_generic_argument()
+    {
+        ISomethingWithGenerics something = Substitute.For<ISomethingWithGenerics>();
+        something
+            .SomeFunctionWithOut(out Arg.Any<IEnumerable<Arg.AnyType>>())
+            .Returns(true);
+
+        bool result = something.SomeFunctionWithOut(out IEnumerable<int> value);
+
+        Assert.That(result, Is.True);
+    }
+
+    [Test]
+    public void Returns_works_with_AnyType_for_ref_parameter_with_AnyType_generic_argument()
+    {
+        ISomethingWithGenerics something = Substitute.For<ISomethingWithGenerics>();
+        something
+            .SomeFunctionWithRef(ref Arg.Any<IEnumerable<Arg.AnyType>>())
+            .Returns(true);
+
+        IEnumerable<int> refParameter = null;
+        bool result = something.SomeFunctionWithRef(ref refParameter);
+
+        Assert.That(result, Is.True);
+    }
+
+    [Test]
+    public void Callback_allows_access_to_method_call()
+    {
+        static ICollection<T> CreateSubstitute<T>(int count)
+        {
+            ICollection<T> substitute = Substitute.For<ICollection<T>>();
+            substitute.Count.Returns(count);
+            return substitute;
+        }
+
+        MethodInfo methodInfo = typeof(GenericArguments)
+            .GetMethods(BindingFlags.Static | BindingFlags.NonPublic)
+            .Single(x
+                => x.Name.Contains(nameof(CreateSubstitute))
+                && x.Name.Contains(nameof(Callback_allows_access_to_method_call)));
+
+        ISomethingWithGenerics something = Substitute.For<ISomethingWithGenerics>();
+        something
+            .SomeFunctionWithoutGenericMethodParameter<Arg.AnyType>(Arg.Any<int>())
+            .Returns(x =>
+            {
+                Type argumentType = x.GenericArgs()[0];
+                MethodInfo method = methodInfo.MakeGenericMethod(argumentType);
+                return method.Invoke(null, [x.Arg<int>()]);
+            });
+
+        ICollection<int> result = something.SomeFunctionWithoutGenericMethodParameter<int>(7);
+
+        Assert.That(result.Count, Is.EqualTo(7));
     }
 }

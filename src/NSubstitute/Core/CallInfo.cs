@@ -1,9 +1,9 @@
-using NSubstitute.Exceptions;
 using System.Diagnostics.CodeAnalysis;
+using NSubstitute.Exceptions;
 
 namespace NSubstitute.Core;
 
-public sealed class CallInfo(Argument[] callArguments)
+public sealed class CallInfo(Argument[] callArguments, Type[] genericArguments)
 {
 
     /// <summary>
@@ -34,6 +34,13 @@ public sealed class CallInfo(Argument[] callArguments)
             throw new ArgumentSetWithIncompatibleValueException(index, argument.DeclaredType, value.GetType());
         }
     }
+
+    /// <summary>
+    /// Gets the generic type arguments in case of a generic method call or an empty array otherwise.
+    /// </summary>
+    /// <returns>Array of types of the generic type arguments for this method call</returns>
+    public Type[] GenericArgs() => 
+    ;
 
     /// <summary>
     /// Get the arguments passed to this call.
