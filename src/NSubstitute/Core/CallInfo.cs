@@ -1,5 +1,5 @@
-using System.Diagnostics.CodeAnalysis;
 using NSubstitute.Exceptions;
+using System.Diagnostics.CodeAnalysis;
 
 namespace NSubstitute.Core;
 
@@ -39,8 +39,7 @@ public sealed class CallInfo(Argument[] callArguments, Type[] genericArguments)
     /// Gets the generic type arguments in case of a generic method call or an empty array otherwise.
     /// </summary>
     /// <returns>Array of types of the generic type arguments for this method call</returns>
-    public Type[] GenericArgs() => 
-    ;
+    public Type[] GenericArgs() => genericArguments;
 
     /// <summary>
     /// Get the arguments passed to this call.

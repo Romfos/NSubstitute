@@ -1,7 +1,6 @@
 ﻿using NSubstitute.Core;
-﻿using System.Reflection;
-using System.Threading.Tasks;
 using NSubstitute.Exceptions;
+using System.Reflection;
 
 namespace NSubstitute.Routing.Handlers;
 
@@ -27,7 +26,7 @@ internal sealed class RaiseEventHandler(IEventHandlerRegistry eventHandlerRegist
 
             try
             {
-                    (handler.DynamicInvoke(eventArguments) as Task)?.GetAwaiter().GetResult();
+                (handler.DynamicInvoke(eventArguments) as Task)?.GetAwaiter().GetResult();
             }
             catch (TargetInvocationException e)
             {
