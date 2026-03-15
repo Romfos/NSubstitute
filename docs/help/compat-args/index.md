@@ -2,6 +2,10 @@
 title: Compatibility argument matchers
 ---
 
+> [!CAUTION]
+> This functionalitiy is obsolete and will be removed in next major release. <br>
+> It is recommended to update your C# compiler to version 7.3 or later and use the standard `Arg` matchers instead.
+
 NSubstitute [argument matchers](/help/argument-matchers) depend on having C# 7.0 or later (as of NSubstitute 4.0). This lets them be used with `out` and `ref` parameters, but it also means that if you are stuck on an earlier version of C# you may get an error like the following when trying to use a matcher like `Arg.Is(123)`:
 
 > `CS7085: By-reference return type 'ref T' is not supported.`
