@@ -1,3 +1,7 @@
+### VNext
+* [NEW] Added .NET 11 to TFM and test matrix
+* [NEW] Enable runtime-async for .NET 11+
+
 ### 6.0.0 (July 2026)
 
 No changes from Release Candidate 1.
